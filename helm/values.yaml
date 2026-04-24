@@ -1,0 +1,57 @@
+fullnameOverride: pronunt-auth-service
+
+namespace:
+  create: false
+  name: prism
+
+image:
+  repository: ghcr.io/pronunt/pronunt-auth-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+containerPort: 8000
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: pronunt-auth-service.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+env:
+  config:
+    APP_NAME: pronunt-auth-service
+    APP_ENV: production
+    APP_HOST: 0.0.0.0
+    APP_PORT: "8000"
+    LOG_LEVEL: INFO
+    GITHUB_APP_ID: replace-me
+    GITHUB_INSTALLATION_ID: replace-me
+    GITHUB_PRIVATE_KEY_PATH: /run/secrets/github-app.pem
+  secret:
+    GITHUB_PRIVATE_KEY: change-me
+
