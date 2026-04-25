@@ -1,10 +1,10 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, Query, Request, status
+from fastapi.responses import RedirectResponse
 
 from app.core.exceptions import AppException
 from app.schemas.auth import (
-    GitHubCallbackResponse,
     GitHubConnectionStatusResponse,
     GitHubLoginResponse,
     GitHubRepositoryListResponse,
@@ -48,8 +48,9 @@ async def github_callback(
     service: AuthServiceDependency,
     code: CodeQuery,
     state: StateQuery,
-) -> GitHubCallbackResponse:
-    return await service.complete_github_oauth(code, state)
+) -> RedirectResponse:
+    callback_response = await service.complete_github_oauth(code, state)
+    return RedirectResponse(url=str(callback_response.redirect_url), status_code=status.HTTP_302_FOUND)
 
 
 @router.get("/me")
