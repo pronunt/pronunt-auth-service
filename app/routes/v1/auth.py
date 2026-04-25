@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Header, Query, Request, status
+from fastapi import APIRouter, Depends, Header, Query, Request, status as http_status
 from fastapi.responses import RedirectResponse
 
 from app.core.exceptions import AppException
@@ -24,14 +24,14 @@ def get_session_token(request: Request) -> str:
     authorization = request.headers.get("Authorization")
     if not authorization:
         raise AppException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=http_status.HTTP_401_UNAUTHORIZED,
             code="missing_session_token",
             message="Session token is required.",
         )
     scheme, _, token = authorization.partition(" ")
     if scheme.lower() != "bearer" or not token:
         raise AppException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=http_status.HTTP_401_UNAUTHORIZED,
             code="invalid_session_header",
             message="Authorization header must use Bearer token format.",
         )
@@ -50,7 +50,7 @@ async def github_callback(
     state: StateQuery,
 ) -> RedirectResponse:
     callback_response = await service.complete_github_oauth(code, state)
-    return RedirectResponse(url=str(callback_response.redirect_url), status_code=status.HTTP_302_FOUND)
+    return RedirectResponse(url=str(callback_response.redirect_url), status_code=http_status.HTTP_302_FOUND)
 
 
 @router.get("/me")
