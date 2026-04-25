@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: pronunt-auth-service
+  namespace: pronunt-app-ns
+spec:
+  parentRefs:
+    - name: pronunt-gateway
+      namespace: pronunt-gateway-ns
+  hostnames:
+    - pronunt.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v1/auth
+      backendRefs:
+        - name: pronunt-auth-service
+          port: 8000
