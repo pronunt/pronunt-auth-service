@@ -22,6 +22,7 @@ from app.schemas.auth import (
     GitHubRepositoryListResponse,
     GitHubRepositoryResponse,
     InternalGitHubConnectionResponse,
+    InternalSessionResponse,
     LogoutResponse,
     SessionResponse,
 )
@@ -163,6 +164,18 @@ class AuthService:
         return InternalGitHubConnectionResponse(
             session_id=session["session_id"],
             access_token=session["access_token"],
+            user=self._to_authenticated_user(session),
+            expires_at=session["expires_at"],
+        )
+
+    def get_internal_session(self, session_token: str, internal_service_token: str) -> InternalSessionResponse:
+        self._ensure_internal_service_token(internal_service_token)
+        session = self._get_session_document(session_token)
+        return InternalSessionResponse(
+            session_id=session["session_id"],
+            subject=session["session_id"],
+            username=session["username"],
+            roles=["developer", "reviewer", "release"],
             user=self._to_authenticated_user(session),
             expires_at=session["expires_at"],
         )
