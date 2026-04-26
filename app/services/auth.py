@@ -144,18 +144,23 @@ class AuthService:
                 "sort": "updated",
             },
         )
-        items = [
-            GitHubRepositoryResponse(
-                id=item["id"],
-                full_name=item["full_name"],
-                owner=item["owner"]["login"],
-                name=item["name"],
-                private=item["private"],
-                default_branch=item.get("default_branch", "main"),
-                html_url=item["html_url"],
+        items = []
+        for item in response.json():
+            owner = item.get("owner") or {}
+            if owner.get("type") != "Organization":
+                continue
+
+            items.append(
+                GitHubRepositoryResponse(
+                    id=item["id"],
+                    full_name=item["full_name"],
+                    owner=owner["login"],
+                    name=item["name"],
+                    private=item["private"],
+                    default_branch=item.get("default_branch", "main"),
+                    html_url=item["html_url"],
+                )
             )
-            for item in response.json()
-        ]
         return GitHubRepositoryListResponse(items=items, total=len(items))
 
     def get_internal_connection(self, session_token: str, internal_service_token: str) -> InternalGitHubConnectionResponse:
