@@ -62,3 +62,12 @@ class InternalGitHubConnectionResponse(BaseModel):
     access_token: str
     user: AuthenticatedUser
     expires_at: datetime
+
+
+class InternalSessionResponse(BaseModel):
+    session_id: str
+    subject: str
+    username: str
+    roles: list[str]
+    user: AuthenticatedUser
+    expires_at: datetime

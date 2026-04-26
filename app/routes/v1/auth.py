@@ -9,6 +9,7 @@ from app.schemas.auth import (
     GitHubLoginResponse,
     GitHubRepositoryListResponse,
     InternalGitHubConnectionResponse,
+    InternalSessionResponse,
     LogoutResponse,
     SessionResponse,
 )
@@ -78,6 +79,15 @@ def internal_github_connection(
     service: AuthServiceDependency,
 ) -> InternalGitHubConnectionResponse:
     return service.get_internal_connection(get_session_token(request), x_internal_service_token)
+
+
+@router.get("/internal/session")
+def internal_session(
+    request: Request,
+    x_internal_service_token: Annotated[str, Header(alias="X-Internal-Service-Token")],
+    service: AuthServiceDependency,
+) -> InternalSessionResponse:
+    return service.get_internal_session(get_session_token(request), x_internal_service_token)
 
 
 @router.post("/logout")
