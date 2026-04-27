@@ -15,3 +15,4 @@ Handles GitHub App authentication and token generation.
 This repository follows trunk-based development with `main` as the long-lived branch.
 
 CI note: merged PRs should carry the `build` label when image publication is expected.
+Release note: April 2026 release automation verification touch.
